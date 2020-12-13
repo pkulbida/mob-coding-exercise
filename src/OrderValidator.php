@@ -2,8 +2,13 @@
 
 namespace Orders;
 
+use Orders\Interfaces\ValidatorInterface;
 
-class OrderValidator
+/**
+ * Class OrderValidator
+ * @package Orders
+ */
+class OrderValidator implements ValidatorInterface
 {
     /**
      * @var bool
@@ -25,14 +30,6 @@ class OrderValidator
 
 		return $this;
 	}
-
-    /**
-     * @return OrderValidator
-     */
-    public static function create()
-    {
-    	return (new self)->setMinimumAmount(file_get_contents('input/minimumAmount'));
-    }
 
     /**
      * @param $order Order

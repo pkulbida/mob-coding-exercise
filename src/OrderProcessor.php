@@ -2,30 +2,34 @@
 
 namespace Orders;
 
+use Orders\Factories\ValidatorFactory;
+use Orders\Interfaces\DeliveryDetailsInterface;
+
 /**
  * Class OrderProcessor
  * @package Orders
  */
 class OrderProcessor
 {
-    /**
-     * @var OrderValidator
-     */
-	private $validator;
-
 	/**
-	 * @var OrderDeliveryDetails
+	 * @var DeliveryDetailsInterface
 	 */
-	private $orderDeliveryDetails;
+	private $deliveryDetails;
+
+    /**
+     * @var ValidatorFactory
+     */
+    private $validatorFactory;
 
     /**
      * OrderProcessor constructor.
-     * @param OrderDeliveryDetails $orderDeliveryDetails
+     * @param DeliveryDetailsInterface $deliveryDetails
+     * @param ValidatorFactory $validatorFactory
      */
-	public function __construct(OrderDeliveryDetails $orderDeliveryDetails)
+	public function __construct(DeliveryDetailsInterface $deliveryDetails, ValidatorFactory $validatorFactory)
 	{
-		$this->orderDeliveryDetails = $orderDeliveryDetails;
-		$this->validator = OrderValidator::create();
+		$this->deliveryDetails  = $deliveryDetails;
+		$this->validatorFactory = $validatorFactory;
 	}
 
 	/**
@@ -34,22 +38,22 @@ class OrderProcessor
 	public function process(Order $order)
 	{
 		ob_start();
+		echo "Processing started, OrderId: {$order->orderId}\n";
 
-		echo "Processing started, OrderId: {$order->order_id}\n";
-		$this->validator->validate($order);
+		$this->validatorFactory->getValidator()->validate($order);
 
 		if ($order->isValid) {
 			echo "Order is valid\n";
+
 			$this->addDeliveryCostLargeItem($order);
 
-			if ($order->is_manual) {
-				echo "Order \"" . $order->order_id . "\" NEEDS MANUAL PROCESSING\n";
+			if ($order->isManual) {
+				echo "Order \"" . $order->orderId . "\" NEEDS MANUAL PROCESSING\n";
 			} else {
-				echo "Order \"" . $order->order_id . "\" WILL BE PROCESSED AUTOMATICALLY\n";
+				echo "Order \"" . $order->orderId . "\" WILL BE PROCESSED AUTOMATICALLY\n";
 			}
 
-			$deliveryDetails = $this->orderDeliveryDetails->getDeliveryDetails(count($order->items));
-			$order->setDeliveryDetails($deliveryDetails);
+			$order->setDeliveryDetails($this->deliveryDetails->getDeliveryDetails(count($order->items)));
 
 		} else {
 			echo "Order is invalid\n";
@@ -76,9 +80,12 @@ class OrderProcessor
 	public function printToFile(Order $order)
 	{
 		$result = ob_get_contents();
+
 		ob_end_clean();
 
-		if ($order->is_valid) {
+		echo $result;
+
+		if ($order->isValid) {
 			$lines = explode("\n", $result);
 
 			$lineWithoutDebugInfo = [];
@@ -93,12 +100,12 @@ class OrderProcessor
             . implode("\n", $lineWithoutDebugInfo ?? [$result] )
         );
 
-		if ($order->is_valid) {
+		if ($order->isValid) {
 			file_put_contents('result', @file_get_contents('result')
-                . $order->order_id
+                . $order->orderId
                 . '-' . implode(',', $order->items)
                 . '-' . $order->deliveryDetails
-                . '-' . ($order->is_manual ? 1 : 0)
+                . '-' . ($order->isManual ? 1 : 0)
                 . '-' . $order->totalAmount
                 . '-' . $order->name . "\n"
             );

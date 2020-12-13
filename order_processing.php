@@ -2,6 +2,7 @@
 
 require_once 'vendor/autoload.php';
 
+use Orders\Factories\ValidatorFactory;
 use Orders\{
     Order, OrderDeliveryDetails, OrderProcessor
 };
@@ -12,4 +13,4 @@ $order = (new Order)
     ->setItems([ 6654 ])
     ->setTotalAmount(346.2);
 
-(new OrderProcessor(new OrderDeliveryDetails))->process($order);
+(new OrderProcessor(new OrderDeliveryDetails, new ValidatorFactory))->process($order);

@@ -2,15 +2,14 @@
 
 namespace Orders;
 
+use Orders\Interfaces\DeliveryDetailsInterface;
+
 /**
  * Class OrderDeliveryDetails
  * @package Orders
  */
-class OrderDeliveryDetails
+class OrderDeliveryDetails implements DeliveryDetailsInterface
 {
-    const ORDER_DELIVERY_TIME_DEFAULT = 'Order delivery time: 1 day';
-    const ORDER_DELIVERY_TIME_CUSTOM = 'Order delivery time: 1 day';
-
     /**
      * @param int $productsCount
      * @return string
