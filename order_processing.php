@@ -12,4 +12,4 @@ $order = (new Order)
     ->setItems([ 6654 ])
     ->setTotalAmount(346.2);
 
-(new OrderProcessor(new OrderDeliveryDetails()))->process($order);
+(new OrderProcessor(new OrderDeliveryDetails))->process($order);

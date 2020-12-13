@@ -2,16 +2,26 @@
 
 namespace Orders;
 
-
+/**
+ * Class OrderProcessor
+ * @package Orders
+ */
 class OrderProcessor
 {
-
+    /**
+     * @var OrderValidator
+     */
 	private $validator;
+
 	/**
 	 * @var OrderDeliveryDetails
 	 */
 	private $orderDeliveryDetails;
 
+    /**
+     * OrderProcessor constructor.
+     * @param OrderDeliveryDetails $orderDeliveryDetails
+     */
 	public function __construct(OrderDeliveryDetails $orderDeliveryDetails)
 	{
 		$this->orderDeliveryDetails = $orderDeliveryDetails;

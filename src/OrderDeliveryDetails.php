@@ -1,19 +1,24 @@
 <?php
-/**
- * @author Timofey Khokhlovskii <timofey.khokhlovskii@internetstores.com>
- */
 
 namespace Orders;
 
-
+/**
+ * Class OrderDeliveryDetails
+ * @package Orders
+ */
 class OrderDeliveryDetails
 {
-	public static function getDeliveryDetails($productsCount)
+    const ORDER_DELIVERY_TIME_DEFAULT = 'Order delivery time: 1 day';
+    const ORDER_DELIVERY_TIME_CUSTOM = 'Order delivery time: 1 day';
+
+    /**
+     * @param int $productsCount
+     * @return string
+     */
+	public static function getDeliveryDetails(int $productsCount): string
 	{
-		if ($productsCount > 1) {
-			return 'Order delivery time: 2 days';
-		} else {
-			return 'Order delivery time: 1 day';
-		}
+	    return $productsCount > 1
+            ? self::ORDER_DELIVERY_TIME_CUSTOM
+            : self::ORDER_DELIVERY_TIME_DEFAULT;
 	}
 }

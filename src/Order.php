@@ -2,7 +2,10 @@
 
 namespace Orders;
 
-
+/**
+ * Class Order
+ * @package Orders
+ */
 class Order
 {
     /**
@@ -40,9 +43,10 @@ class Order
 	 */
 	public $deliveryDetails;
 
-	/**
-	 * @param string $name
-	 */
+    /**
+     * @param string $name
+     * @return $this
+     */
 	public function setName(string $name)
 	{
 		$this->name = $name;
@@ -50,9 +54,10 @@ class Order
         return $this;
 	}
 
-	/**
-	 * @param array $items
-	 */
+    /**
+     * @param array $items
+     * @return $this
+     */
 	public function setItems(array $items)
 	{
 		$this->items = $items;
@@ -60,9 +65,10 @@ class Order
         return $this;
 	}
 
-	/**
-	 * @param float $totalAmount
-	 */
+    /**
+     * @param float $totalAmount
+     * @return $this
+     */
 	public function setTotalAmount(float $totalAmount)
 	{
 		$this->totalAmount = $totalAmount;
@@ -70,9 +76,10 @@ class Order
         return $this;
 	}
 
-	/**
-	 * @param int $order_id
-	 */
+    /**
+     * @param int $order_id
+     * @return $this
+     */
 	public function setOrderId(int $order_id)
 	{
 		$this->order_id = $order_id;
@@ -82,6 +89,7 @@ class Order
 
     /**
      * @param string $deliveryDetails
+     * @return $this
      */
 	public function setDeliveryDetails(string $deliveryDetails)
 	{
