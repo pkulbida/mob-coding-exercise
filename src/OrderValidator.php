@@ -6,6 +6,11 @@ namespace Orders;
 class OrderValidator
 {
     /**
+     * @var bool
+     */
+    protected $isValid = true;
+
+    /**
      * @var int
      */
 	public $minimumAmount;
@@ -34,22 +39,20 @@ class OrderValidator
      */
     public function validate(Order $order)
     {
-	    $is_valid = true;
-
 	    if (!is_string($order->name)
             || !(strlen($order->name) > 2)
             || !($order->totalAmount > 0)
             || $order->totalAmount < $this->minimumAmount
         ) {
-		    $is_valid = false;
+            $this->isValid = false;
 	    }
 
-	    foreach ($order->items as $item_id) {
-		    if (!is_int($item_id)) {
-			    $is_valid = false;
+	    foreach ($order->items as $itemId) {
+		    if (!is_int($itemId)) {
+                $this->isValid = false;
 		    }
 	    }
 
-	    $order->is_valid = $is_valid;
+	    $order->setIsValid($this->isValid);
     }
 }

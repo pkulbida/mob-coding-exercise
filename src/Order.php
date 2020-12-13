@@ -11,17 +11,17 @@ class Order
 	/**
 	 * @var int
 	 */
-	public $order_id;
+	public $orderId;
 
 	/**
 	 * @var bool
 	 */
-	public $is_manual = false;
+	public $isManual = false;
 
     /**
      * @var bool
      */
-    public $is_valid;
+    public $isValid;
 
 	/**
 	 * @var string
@@ -44,34 +44,34 @@ class Order
 	public $deliveryDetails;
 
     /**
-     * @param int $order_id
+     * @param int $orderId
      * @return $this
      */
-    public function setOrderId(int $order_id)
+    public function setOrderId(int $orderId)
     {
-        $this->order_id = $order_id;
+        $this->orderId = $orderId;
 
         return $this;
     }
 
     /**
-     * @param bool $is_manual
+     * @param bool $isManual
      * @return $this
      */
-    public function setIsManual(bool $is_manual)
+    public function setIsManual(bool $isManual)
     {
-        $this->is_manual = $is_manual;
+        $this->isManual = $isManual;
 
         return $this;
     }
 
     /**
-     * @param bool $is_valid
+     * @param bool $isValid
      * @return $this
      */
-    public function setIsValid(bool $is_valid)
+    public function setIsValid(bool $isValid)
     {
-        $this->is_valid = $is_valid;
+        $this->isValid = $isValid;
 
         return $this;
     }

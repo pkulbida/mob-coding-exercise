@@ -31,22 +31,26 @@ class OrderProcessor
 	/**
 	 * @param $order Order
 	 */
-	public function process($order)
+	public function process(Order $order)
 	{
 		ob_start();
+
 		echo "Processing started, OrderId: {$order->order_id}\n";
 		$this->validator->validate($order);
 
-		if ($order->is_valid) {
+		if ($order->isValid) {
 			echo "Order is valid\n";
 			$this->addDeliveryCostLargeItem($order);
+
 			if ($order->is_manual) {
 				echo "Order \"" . $order->order_id . "\" NEEDS MANUAL PROCESSING\n";
 			} else {
 				echo "Order \"" . $order->order_id . "\" WILL BE PROCESSED AUTOMATICALLY\n";
 			}
+
 			$deliveryDetails = $this->orderDeliveryDetails->getDeliveryDetails(count($order->items));
 			$order->setDeliveryDetails($deliveryDetails);
+
 		} else {
 			echo "Order is invalid\n";
 		}
@@ -57,22 +61,26 @@ class OrderProcessor
 	/**
 	 * @param $order Order
 	 */
-	public function addDeliveryCostLargeItem($order)
+	public function addDeliveryCostLargeItem(Order $order)
 	{
 		foreach ($order->items as $item) {
 			if (in_array($item, [3231, 9823])) {
-				$order->totalAmount = $order->totalAmount + 100;
+				$order->totalAmount += 100;
 			}
 		}
 	}
 
-	public function printToFile($order)
+    /**
+     * @param Order $order
+     */
+	public function printToFile(Order $order)
 	{
 		$result = ob_get_contents();
 		ob_end_clean();
 
 		if ($order->is_valid) {
 			$lines = explode("\n", $result);
+
 			$lineWithoutDebugInfo = [];
 			foreach ($lines as $line) {
 				if (strpos($line, 'Reason:') === false) {
@@ -81,9 +89,19 @@ class OrderProcessor
 			}
 		}
 
-		file_put_contents('orderProcessLog', @file_get_contents('orderProcessLog') . implode("\n", $lineWithoutDebugInfo ?? [$result] ));
+		file_put_contents('orderProcessLog', @file_get_contents('orderProcessLog')
+            . implode("\n", $lineWithoutDebugInfo ?? [$result] )
+        );
+
 		if ($order->is_valid) {
-			file_put_contents('result', @file_get_contents('result') . $order->order_id . '-' . implode(',', $order->items) . '-' . $order->deliveryDetails . '-' . ($order->is_manual ? 1 : 0) . '-' . $order->totalAmount . '-' . $order->name . "\n");
+			file_put_contents('result', @file_get_contents('result')
+                . $order->order_id
+                . '-' . implode(',', $order->items)
+                . '-' . $order->deliveryDetails
+                . '-' . ($order->is_manual ? 1 : 0)
+                . '-' . $order->totalAmount
+                . '-' . $order->name . "\n"
+            );
 		}
 	}
 }
