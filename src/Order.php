@@ -5,30 +5,40 @@ namespace Orders;
 
 class Order
 {
+    /**
+     * @var bool
+     */
+    public $is_valid;
+
 	/**
 	 * @var int
 	 */
 	public $order_id;
+
 	/**
 	 * @var bool
 	 */
 	public $is_manual = false;
+
 	/**
 	 * @var string
 	 */
 	public $name;
+
 	/**
 	 * @var array
 	 */
 	public $items;
+
 	/**
 	 * @var float
 	 */
 	public $totalAmount;
+
 	/**
 	 * @var string
 	 */
-	public  $deliveryDetails;
+	public $deliveryDetails;
 
 	/**
 	 * @param string $name
@@ -36,6 +46,8 @@ class Order
 	public function setName(string $name)
 	{
 		$this->name = $name;
+
+        return $this;
 	}
 
 	/**
@@ -44,6 +56,8 @@ class Order
 	public function setItems(array $items)
 	{
 		$this->items = $items;
+
+        return $this;
 	}
 
 	/**
@@ -52,6 +66,8 @@ class Order
 	public function setTotalAmount(float $totalAmount)
 	{
 		$this->totalAmount = $totalAmount;
+
+        return $this;
 	}
 
 	/**
@@ -60,12 +76,17 @@ class Order
 	public function setOrderId(int $order_id)
 	{
 		$this->order_id = $order_id;
+
+		return $this;
 	}
 
-	public $is_valid;
-
-	public function setDeliveryDetails($deliveryDetails)
+    /**
+     * @param string $deliveryDetails
+     */
+	public function setDeliveryDetails(string $deliveryDetails)
 	{
 		$this->deliveryDetails = $deliveryDetails;
+
+        return $this;
 	}
 }
