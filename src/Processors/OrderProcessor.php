@@ -10,7 +10,8 @@ use App\Models\DomainModelInterface;
  */
 class OrderProcessor extends AbstractOrderProcessor
 {
-    const PROC_VALID_ORDER_MESSAGE = "Order is valid\n";
+    const PROC_AMOUNT_MAGNIFIER = 100;
+    const PROC_CHECKING_ITEMS   = [3231, 9823];
 
 	/**
 	 * @param $order DomainModelInterface
@@ -23,66 +24,31 @@ class OrderProcessor extends AbstractOrderProcessor
             $order->setIsValid(true);
 			$this->addDeliveryCostLargeItem($order);
 
-			if ($order->isManual) {
-				echo "Order \"" . $order->orderId . "\" NEEDS MANUAL PROCESSING\n";
-			} else {
-				echo "Order \"" . $order->orderId . "\" WILL BE PROCESSED AUTOMATICALLY\n";
-			}
+            $this->outputProcessor->printMessage($order->isManual
+                ? sprintf(self::PROC_MANUAL_ORDER_MESSAGE, $order->getOrderId())
+                : sprintf(self::PROC_AUTO_ORDER_MESSAGE, $order->getOrderId())
+            );
 
 			$order->setDeliveryDetails($this->deliveryDetails->getDeliveryDetails(count($order->items)));
-
 		} else {
-			echo "Order is invalid\n";
-		}
-	}
-
-	/**
-	 * @param $order DomainModelInterface
-	 */
-	public function addDeliveryCostLargeItem(DomainModelInterface $order)
-	{
-		foreach ($order->items as $item) {
-			if (in_array($item, [3231, 9823])) {
-				$order->totalAmount += 100;
-			}
+            $this->outputProcessor->printMessage(self::PROC_INVALID_ORDER_MESSAGE);
 		}
 	}
 
     /**
      * @param DomainModelInterface $order
+     * @param int $amountMag
+     * @param array $checkingItems
      */
-	public function printToFile(DomainModelInterface $order)
-	{
-		$result = ob_get_contents();
-
-		ob_end_clean();
-
-		//echo $result;
-
-		if ($order->isValid) {
-			$lines = explode("\n", $result);
-
-			$lineWithoutDebugInfo = [];
-			foreach ($lines as $line) {
-				if (strpos($line, 'Reason:') === false) {
-					$lineWithoutDebugInfo[] = $line;
-				}
+	public function addDeliveryCostLargeItem(
+	    DomainModelInterface $order,
+        $amountMag = self::PROC_AMOUNT_MAGNIFIER,
+        $checkingItems = self::PROC_CHECKING_ITEMS
+    ) {
+		foreach ($order->items as $item) {
+			if (in_array($item, $checkingItems)) {
+				$order->totalAmount += $amountMag;
 			}
-		}
-
-		file_put_contents('orderProcessLog', @file_get_contents('orderProcessLog')
-            . implode("\n", $lineWithoutDebugInfo ?? [$result] )
-        );
-
-		if ($order->isValid) {
-			file_put_contents('result', @file_get_contents('result')
-                . $order->orderId
-                . '-' . implode(',', $order->items)
-                . '-' . $order->deliveryDetails
-                . '-' . ($order->isManual ? 1 : 0)
-                . '-' . $order->totalAmount
-                . '-' . $order->name . "\n"
-            );
 		}
 	}
 }

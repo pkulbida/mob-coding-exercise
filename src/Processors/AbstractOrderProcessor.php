@@ -12,7 +12,11 @@ use App\Models\DomainModelInterface;
  */
 abstract class AbstractOrderProcessor
 {
-    const PROC_START_MESSAGE = "Processing started, OrderId: %s\n";
+    const PROC_START_MESSAGE         = "Processing started, OrderId: %s\n";
+    const PROC_VALID_ORDER_MESSAGE   = "Order is valid\n";
+    const PROC_INVALID_ORDER_MESSAGE = "Order is invalid\n";
+    const PROC_MANUAL_ORDER_MESSAGE  = "Order '%s' NEEDS MANUAL PROCESSING\n";
+    const PROC_AUTO_ORDER_MESSAGE    = "Order '%s' WILL BE PROCESSED AUTOMATICALLY\n";
 
 	/**
 	 * @var DeliveryDetailsInterface
@@ -54,52 +58,19 @@ abstract class AbstractOrderProcessor
 
 		$this->validateProcessOrder($order);
 
-		$this->printToFile($order);
-
-        $this->outputProcessor->endOutputProcessing();
-	}
-
-	/**
-	 * @param $order DomainModelInterface
-	 */
-	public function addDeliveryCostLargeItem(DomainModelInterface $order)
-	{
-		foreach ($order->items as $item) {
-			if (in_array($item, [3231, 9823])) {
-				$order->totalAmount += 100;
-			}
-		}
+		$this->outputProcessor->printResult($order, $this->outputProcessor->endOutputProcessing());
 	}
 
     /**
      * @param DomainModelInterface $order
+     * @return mixed
      */
-	public function printToFile(DomainModelInterface $order)
-	{
-		if ($order->isValid) {
-			$lines = explode("\n", $result);
+	abstract public function validateProcessOrder(DomainModelInterface $order);
 
-			$lineWithoutDebugInfo = [];
-			foreach ($lines as $line) {
-				if (strpos($line, 'Reason:') === false) {
-					$lineWithoutDebugInfo[] = $line;
-				}
-			}
-		}
-
-		file_put_contents('orderProcessLog', @file_get_contents('orderProcessLog')
-            . implode("\n", $lineWithoutDebugInfo ?? [$result] )
-        );
-
-		if ($order->isValid) {
-			file_put_contents('result', @file_get_contents('result')
-                . $order->orderId
-                . '-' . implode(',', $order->items)
-                . '-' . $order->deliveryDetails
-                . '-' . ($order->isManual ? 1 : 0)
-                . '-' . $order->totalAmount
-                . '-' . $order->name . "\n"
-            );
-		}
-	}
+    /**
+     * @param DomainModelInterface $order
+     * @param int $amountMag
+     * @param array $checkingItems
+     */
+    abstract public function addDeliveryCostLargeItem(DomainModelInterface $order, int $amountMag, array $checkingItems);
 }
