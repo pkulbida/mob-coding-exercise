@@ -66,7 +66,7 @@ class OutputProcessor
                 . $order->getOrderId()
                 . '-' . implode(',', $order->getItems())
                 . '-' . $order->getDeliveryDetails()
-                . '-' . $order->isManual() //? 1 : 0)
+                . '-' . $order->isManual()
                 . '-' . $order->getTotalAmount()
                 . '-' . $order->getName() . "\n"
             );

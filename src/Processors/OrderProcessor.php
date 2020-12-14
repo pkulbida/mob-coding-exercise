@@ -45,7 +45,7 @@ class OrderProcessor extends AbstractOrderProcessor
         $amountMag = self::PROC_AMOUNT_MAGNIFIER,
         $checkingItems = self::PROC_CHECKING_ITEMS
     ) {
-		foreach ($order->items as $item) {
+		foreach ($order->getItems() as $item) {
 			if (in_array($item, $checkingItems)) {
 				$order->totalAmount += $amountMag;
 			}

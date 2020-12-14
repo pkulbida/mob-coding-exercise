@@ -129,11 +129,11 @@ class Order implements DomainModelInterface
     }
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isManual(): bool
+    public function isManual(): int
     {
-        return $this->isManual;
+        return $this->isManual ? 1 : 0;
     }
 
     /**

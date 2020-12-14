@@ -56,9 +56,9 @@ interface DomainModelInterface
     public function getOrderId(): int;
 
     /**
-     * @return bool
+     * @return int
      */
-    public function isManual(): bool;
+    public function isManual(): int;
 
     /**
      * @return bool
