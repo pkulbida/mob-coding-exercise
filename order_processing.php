@@ -2,10 +2,10 @@
 
 require_once 'vendor/autoload.php';
 
-use Orders\Factories\ValidatorFactory;
-use Orders\{
-    Order, OrderDeliveryDetails, OrderProcessor
-};
+use App\Models\Order;
+use App\Processors\OrderProcessor;
+use App\Detalizators\OrderDeliveryDetails;
+use App\Factories\ValidatorFactory;
 
 $order = (new Order)
     ->setOrderId(2)
