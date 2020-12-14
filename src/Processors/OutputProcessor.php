@@ -10,6 +10,15 @@ class OutputProcessor
     public function startOutputProcessing($message)
     {
         ob_start();
+
+        $this->printMessage($message);
+    }
+
+    /**
+     * @param $message
+     */
+    public function printMessage($message)
+    {
         echo $message;
     }
 

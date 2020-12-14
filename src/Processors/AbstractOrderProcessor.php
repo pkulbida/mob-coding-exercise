@@ -17,17 +17,17 @@ abstract class AbstractOrderProcessor
 	/**
 	 * @var DeliveryDetailsInterface
 	 */
-	private $deliveryDetails;
+    protected $deliveryDetails;
 
     /**
      * @var ValidatorFactory
      */
-    private $validatorFactory;
+    protected $validatorFactory;
 
     /**
      * @var OutputProcessor
      */
-    private $outputProcessor;
+    protected $outputProcessor;
 
     /**
      * AbstractOrderProcessor constructor.
@@ -52,23 +52,7 @@ abstract class AbstractOrderProcessor
 	{
         $this->outputProcessor->startOutputProcessing(sprintf(self::PROC_START_MESSAGE, $order->orderId));
 
-		if (!$this->validatorFactory->getValidator()->validate($order)->fails()) {
-            echo "Order is valid\n";
-
-            $order->setIsValid(true);
-			$this->addDeliveryCostLargeItem($order);
-
-			if ($order->isManual) {
-				echo "Order \"" . $order->orderId . "\" NEEDS MANUAL PROCESSING\n";
-			} else {
-				echo "Order \"" . $order->orderId . "\" WILL BE PROCESSED AUTOMATICALLY\n";
-			}
-
-			$order->setDeliveryDetails($this->deliveryDetails->getDeliveryDetails(count($order->items)));
-
-		} else {
-			echo "Order is invalid\n";
-		}
+		$this->validateProcessOrder($order);
 
 		$this->printToFile($order);
 

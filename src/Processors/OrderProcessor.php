@@ -2,47 +2,23 @@
 
 namespace App\Processors;
 
-use App\Factories\ValidatorFactory;
-use App\Detalizators\DeliveryDetailsInterface;
 use App\Models\DomainModelInterface;
 
 /**
  * Class OrderProcessor
  * @package App\Processors
  */
-class OrderProcessor
+class OrderProcessor extends AbstractOrderProcessor
 {
-	/**
-	 * @var DeliveryDetailsInterface
-	 */
-	private $deliveryDetails;
-
-    /**
-     * @var ValidatorFactory
-     */
-    private $validatorFactory;
-
-    /**
-     * OrderProcessor constructor.
-     * @param DeliveryDetailsInterface $deliveryDetails
-     * @param ValidatorFactory $validatorFactory
-     */
-	public function __construct(DeliveryDetailsInterface $deliveryDetails, ValidatorFactory $validatorFactory)
-	{
-		$this->deliveryDetails  = $deliveryDetails;
-		$this->validatorFactory = $validatorFactory;
-	}
+    const PROC_VALID_ORDER_MESSAGE = "Order is valid\n";
 
 	/**
 	 * @param $order DomainModelInterface
 	 */
-	public function process(DomainModelInterface $order)
+	public function validateProcessOrder(DomainModelInterface $order)
 	{
-		ob_start();
-		echo "Processing started, OrderId: {$order->orderId}\n";
-
 		if (!$this->validatorFactory->getValidator()->validate($order)->fails()) {
-            echo "Order is valid\n";
+		    $this->outputProcessor->printMessage(self::PROC_VALID_ORDER_MESSAGE);
 
             $order->setIsValid(true);
 			$this->addDeliveryCostLargeItem($order);
@@ -58,8 +34,6 @@ class OrderProcessor
 		} else {
 			echo "Order is invalid\n";
 		}
-
-		$this->printToFile($order);
 	}
 
 	/**

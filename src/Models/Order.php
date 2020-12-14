@@ -119,4 +119,60 @@ class Order implements DomainModelInterface
 
         return $this;
 	}
+
+    /**
+     * @return int
+     */
+    public function getOrderId(): int
+    {
+        return $this->orderId;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isManual(): bool
+    {
+        return $this->isManual;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isValid(): bool
+    {
+        return $this->isValid;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return array
+     */
+    public function getItems(): array
+    {
+        return $this->items;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalAmount(): float
+    {
+        return $this->totalAmount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDeliveryDetails(): string
+    {
+        return $this->deliveryDetails;
+    }
 }
