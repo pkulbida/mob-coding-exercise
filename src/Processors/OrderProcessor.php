@@ -24,12 +24,12 @@ class OrderProcessor extends AbstractOrderProcessor
             $order->setIsValid(true);
 			$this->addDeliveryCostLargeItem($order);
 
-            $this->outputProcessor->printMessage($order->isManual
+            $this->outputProcessor->printMessage($order->isManual()
                 ? sprintf(self::PROC_MANUAL_ORDER_MESSAGE, $order->getOrderId())
                 : sprintf(self::PROC_AUTO_ORDER_MESSAGE, $order->getOrderId())
             );
 
-			$order->setDeliveryDetails($this->deliveryDetails->getDeliveryDetails(count($order->items)));
+			$order->setDeliveryDetails($this->deliveryDetails->getDeliveryDetails(count($order->getItems())));
 		} else {
             $this->outputProcessor->printMessage(self::PROC_INVALID_ORDER_MESSAGE);
 		}

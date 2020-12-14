@@ -15,7 +15,7 @@ class OutputProcessor
      */
     public function startOutputProcessing($message)
     {
-        ob_start();
+        ob_start(null, 0, PHP_OUTPUT_HANDLER_CLEANABLE | PHP_OUTPUT_HANDLER_REMOVABLE);
 
         $this->printMessage($message);
     }
@@ -33,11 +33,7 @@ class OutputProcessor
      */
     public function endOutputProcessing()
     {
-        $result = ob_get_contents();
-
-        ob_end_clean();
-
-        return $result;
+        return ob_get_clean();
     }
 
     /**
@@ -63,12 +59,14 @@ class OutputProcessor
 
         if ($order->isValid()) {
             file_put_contents('result', @file_get_contents('result')
-                . $order->getOrderId()
-                . '-' . implode(',', $order->getItems())
-                . '-' . $order->getDeliveryDetails()
-                . '-' . $order->isManual()
-                . '-' . $order->getTotalAmount()
-                . '-' . $order->getName() . "\n"
+                . implode('-', [
+                    $order->getOrderId(),
+                    implode(',', $order->getItems()),
+                    $order->getDeliveryDetails(),
+                    $order->isManual(),
+                    $order->getTotalAmount(),
+                    $order->getName() . "\n"
+                ])
             );
         }
     }

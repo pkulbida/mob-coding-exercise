@@ -37,9 +37,10 @@ class OrderValidator implements ValidatorInterface
     public function validate(DomainModelInterface $order)
     {
 	    if (!is_string($order->getName())
-            || !(strlen($order->getName()) > 2)
-            || !($order->getTotalAmount() > 0)
+            || strlen($order->getName()) <= 2
+            || $order->getTotalAmount() <= 0
             || $order->getTotalAmount() < $this->minimumAmount
+            || !is_array($order->getItems())
         ) {
             $this->isValid = false;
 	    }
