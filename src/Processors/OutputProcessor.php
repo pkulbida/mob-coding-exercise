@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Processors;
 
@@ -28,7 +29,6 @@ class OutputProcessor
      */
     public function printResult(DomainModelInterface $order)
     {
-
         if ($order->isValid()) {
             $lines = explode("\n", static::$outputBuffer);
 
