@@ -54,11 +54,11 @@ abstract class AbstractOrderProcessor
 	 */
 	public function process(DomainModelInterface $order)
 	{
-        $this->outputProcessor->startOutputProcessing(sprintf(self::PROC_START_MESSAGE, $order->orderId));
+        $this->outputProcessor->message(sprintf(self::PROC_START_MESSAGE, $order->orderId));
 
 		$this->validateProcessOrder($order);
 
-		$this->outputProcessor->printResult($order, $this->outputProcessor->endOutputProcessing());
+		$this->outputProcessor->printResult($order);
 	}
 
     /**

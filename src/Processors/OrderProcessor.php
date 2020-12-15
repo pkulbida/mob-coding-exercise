@@ -19,19 +19,19 @@ class OrderProcessor extends AbstractOrderProcessor
 	public function validateProcessOrder(DomainModelInterface $order)
 	{
 		if (!$this->validatorFactory->getValidator()->validate($order)->fails()) {
-		    $this->outputProcessor->printMessage(self::PROC_VALID_ORDER_MESSAGE);
+		    $this->outputProcessor->message(self::PROC_VALID_ORDER_MESSAGE);
 
             $order->setIsValid(true);
 			$this->addDeliveryCostLargeItem($order);
 
-            $this->outputProcessor->printMessage($order->isManual()
+            $this->outputProcessor->message($order->isManual()
                 ? sprintf(self::PROC_MANUAL_ORDER_MESSAGE, $order->getOrderId())
                 : sprintf(self::PROC_AUTO_ORDER_MESSAGE, $order->getOrderId())
             );
 
 			$order->setDeliveryDetails($this->deliveryDetails->getDeliveryDetails(count($order->getItems())));
 		} else {
-            $this->outputProcessor->printMessage(self::PROC_INVALID_ORDER_MESSAGE);
+            $this->outputProcessor->message(self::PROC_INVALID_ORDER_MESSAGE);
 		}
 	}
 

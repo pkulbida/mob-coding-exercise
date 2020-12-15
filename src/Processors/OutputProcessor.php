@@ -11,39 +11,26 @@ use App\Models\DomainModelInterface;
 class OutputProcessor
 {
     /**
-     * @param $message
+     * @var string
      */
-    public function startOutputProcessing($message)
-    {
-        ob_start(null, 0, PHP_OUTPUT_HANDLER_CLEANABLE | PHP_OUTPUT_HANDLER_REMOVABLE);
-
-        $this->printMessage($message);
-    }
+    private static $outputBuffer = '';
 
     /**
-     * @param $message
+     * @param string $message
      */
-    public function printMessage($message)
+    public function message(string $message)
     {
-        echo $message;
-    }
-
-    /**
-     * @return false|string
-     */
-    public function endOutputProcessing()
-    {
-        return ob_get_clean();
+        static::$outputBuffer .= $message;
     }
 
     /**
      * @param DomainModelInterface $order
-     * @param $result
      */
-    public function printResult(DomainModelInterface $order, $result)
+    public function printResult(DomainModelInterface $order)
     {
+
         if ($order->isValid()) {
-            $lines = explode("\n", $result);
+            $lines = explode("\n", static::$outputBuffer);
 
             $lineWithoutDebugInfo = [];
             foreach ($lines as $line) {
@@ -53,20 +40,19 @@ class OutputProcessor
             }
         }
 
-        file_put_contents('orderProcessLog', @file_get_contents('orderProcessLog')
-            . implode("\n", $lineWithoutDebugInfo ?? [$result] )
-        );
+        $dataToWrite = implode("\n", $lineWithoutDebugInfo ?? [static::$outputBuffer]);
+        file_put_contents('orderProcessLog', $dataToWrite, FILE_APPEND);
 
         if ($order->isValid()) {
-            file_put_contents('result', @file_get_contents('result')
-                . implode('-', [
+            file_put_contents('result', implode('-', [
                     $order->getOrderId(),
                     implode(',', $order->getItems()),
                     $order->getDeliveryDetails(),
                     $order->isManual(),
                     $order->getTotalAmount(),
                     $order->getName() . "\n"
-                ])
+                ]),
+                FILE_APPEND
             );
         }
     }
